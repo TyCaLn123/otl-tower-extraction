@@ -1,0 +1,74 @@
+input_path: data/Line7/Line7.txt
+output_dir: outputs/default
+output_prefix: auto
+label_column: 3
+
+coordinates:
+  integer_internal: true
+  scale: 10
+  input_unit: m
+  output_unit: m
+
+stages:
+  preprocess: true
+  localization: true
+  precise_extraction: true
+
+progress:
+  enabled: true
+  stage_messages: true
+  open3d_progress: true
+
+preprocess:
+  voxel_size: 0.1
+  sor_neighbors: 10
+  sor_std_ratio: 5.0
+  grid_size: 1.0
+  near_ground_height: 15
+
+localization:
+  dbscan_voxel_size: 1.0
+  dbscan_eps: 8
+  dbscan_min_points: 300
+  min_cluster_height: 15.0
+  bbox_expand_xy: 2.0
+
+central_region:
+  slice_height: 1.0
+  slice_window_height: 2.0
+  angle_range_threshold_deg: 5.0
+  rectangle_diff_threshold: 1.0
+  angle_std_factor: 1.0
+  use_whole_candidate: false
+  adaptive_slope_check: true
+  slope_abs_diff_threshold: 0.02
+  adaptive_slice_heights: [0.1, 0.2, 0.5, 2.0]
+
+side_view:
+  enabled: true
+  vertical_step: 0.1
+  tolerance: 0.2
+
+front_view:
+  enabled: true
+  vertical_step: 0.1
+  tolerance: 0.5
+  raster_margin: 10
+  jump_threshold: 2.0
+
+base_filter:
+  enabled: true
+  use_height_threshold_only: false
+  height_threshold: 0.5
+  search_step: 0.1
+  axis_contact_threshold: 0.2
+  center_contact_gap: 0.5
+  transition_cluster_gap: 1.0
+  base_plane_thickness: 1.0
+  base_top_score_lambda: 0.1
+  lower_margin: 0.5
+  fallback_base_height: 5.0
+  distance_tolerance: 1.0
+
+# If a candidate tower fails during precise extraction, record the failure and continue with the next tower.
+continue_on_candidate_error: true

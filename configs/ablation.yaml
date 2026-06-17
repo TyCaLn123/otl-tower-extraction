@@ -1,0 +1,49 @@
+base_config: configs/default.yaml
+
+# Optional. If omitted, the input_path in base_config is used.
+input_paths:
+# - data/Line1/Line1.txt
+# - data/Line2/Line2.txt
+# - data/Line3/Line3.txt
+# - data/Line4/Line4.txt
+# - data/Line5/Line5.txt
+- data/Line6/Line6.txt
+
+output_root: outputs/ablation
+
+# Ablation experiments are metric-oriented by default.
+# Point-cloud files are not saved unless this is set to true.
+save_point_clouds: false
+
+# Disable progress bars for batch ablation runs.
+show_progress: true
+
+variants:
+  full_model:
+    central_region.use_whole_candidate: false
+    side_view.enabled: true
+    front_view.enabled: true
+    base_filter.enabled: true
+    base_filter.use_height_threshold_only: false
+
+  without_central_region_guidance:
+    central_region.use_whole_candidate: true
+    side_view.enabled: true
+    front_view.enabled: true
+    base_filter.enabled: true
+    base_filter.use_height_threshold_only: false
+
+  without_dual_view_refinement:
+    central_region.use_whole_candidate: false
+    side_view.enabled: true
+    front_view.enabled: false
+    base_filter.enabled: true
+    base_filter.use_height_threshold_only: false
+
+  without_base_constrained_filtering:
+    central_region.use_whole_candidate: false
+    side_view.enabled: true
+    front_view.enabled: true
+    base_filter.enabled: true
+    base_filter.use_height_threshold_only: true
+    base_filter.height_threshold: 1

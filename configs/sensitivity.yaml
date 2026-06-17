@@ -1,0 +1,106 @@
+# Parameter sensitivity analysis configuration.
+#
+# Recommended command:
+#   python scripts/run_sensitivity.py --config configs/sensitivity.yaml
+#
+# The default strategy is one-factor-at-a-time. Each parameter is varied while
+# all other parameters are fixed at the base configuration values.
+
+base_config: configs/default.yaml
+strategy: one_factor
+# Failed runs are recorded in CSV and the next parameter setting continues.
+# Use --stop-on-error from CLI only when debugging.
+include_default: true
+output_dir: outputs/sensitivity
+
+# Optional. If omitted, the input_path in configs/default.yaml is used.
+# Add all test lines here for the final manuscript experiment.
+input_paths:
+ - data/Line1/Line1.txt
+ - data/Line2/Line2.txt
+ - data/Line3/Line3.txt
+ - data/Line4/Line4.txt
+ - data/Line5/Line5.txt
+ - data/Line6/Line6.txt
+
+# Overrides applied to every sensitivity run.
+# save_point_clouds=false avoids writing huge TXT files for each trial.
+base_overrides:
+  stages.preprocess: true
+  stages.localization: true
+  stages.precise_extraction: true
+  progress.enabled: false
+  progress.stage_messages: true
+  progress.open3d_progress: false
+  save_point_clouds: false
+  continue_on_candidate_error: true
+
+sweep:
+  voxel_size:
+    path: preprocess.voxel_size
+    symbol: "$v_s$"
+    unit: "m"
+    description: "Scene voxel size for preprocessing downsampling."
+    values: [0.05, 0.10, 0.20, 0.30, 0.50]
+
+  epsilon_db:
+    path: localization.dbscan_eps
+    symbol: "$\\epsilon_{db}$"
+    unit: "m"
+    description: "DBSCAN neighborhood radius."
+    values: [6, 7, 8, 9, 10]
+
+  dbscan_min_points:
+    path: localization.dbscan_min_points
+    symbol: "$MinPts$"
+    unit: ""
+    description: "Minimum number of points required by DBSCAN."
+    values: [100, 150, 200, 250, 300]
+
+  h_f:
+    path: preprocess.near_ground_height
+    symbol: "$h_f$"
+    unit: "m"
+    description: "Grid-based near-ground suppression height threshold."
+    values: [8, 12, 15, 20, 25]
+
+  delta_x:
+    path: side_view.tolerance
+    symbol: "$\\delta_x$"
+    unit: "m"
+    description: "Side-view admissible envelope tolerance."
+    values: [0.10, 0.20, 0.30, 0.40, 0.50]
+
+  delta_y:
+    path: front_view.tolerance
+    symbol: "$\\delta_y$"
+    unit: "m"
+    description: "Front-view admissible envelope tolerance."
+    values: [0.10, 0.20, 0.30, 0.40, 0.50]
+
+  tau_b:
+    path: base_filter.distance_tolerance
+    symbol: "$\\tau_b$"
+    unit: "m"
+    description: "Base-constrained filtering distance tolerance."
+    values: [0.50, 0.80, 1.00, 1.20, 1.50]
+
+  base_top_score_lambda:
+    path: base_filter.base_top_score_lambda
+    symbol: "$\\lambda$"
+    unit: ""
+    description: "Weight of the normalized base-plane slab-count term in base-top selection."
+    values: [0, 0.1, 0.2, 0.3, 0.4]
+
+  jump_threshold:
+    path: front_view.jump_threshold
+    symbol: "$T_j$"
+    unit: "m"
+    description: "Front-view contour jump threshold."
+    values: [1.00, 1.50, 2.00, 2.50, 3.00]
+
+plot:
+  enabled: true
+  metric: F1
+  filename: sensitivity_F1.pdf
+  title: "Parameter sensitivity analysis"
