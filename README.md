@@ -30,23 +30,65 @@ This public release includes:
 - documentation for input data preparation and output interpretation;
 - scripts for evaluation and selected experiments.
 
-## Self-Built Dataset
+## Dataset Folder Preparation
 
-The experiments reported in the article were conducted on a self-built UAV
-LiDAR dataset for overhead transmission line tower extraction. The dataset was
-collected in cooperation with an industrial partner and covers multiple OTL
-inspection scenarios in China, including plain and mountainous areas. The point
-cloud scenes preserve realistic tower surroundings, where tower points are
-mixed with ground, vegetation, conductors, insulators, and other corridor
-objects.
+The original UAV LiDAR datasets used in the article are not included in this
+repository. The example configurations use `data/` as the dataset folder. To run
+the released code, prepare your own `data/` folder under the repository root and
+place each OTL corridor scene in a separate line folder:
 
-This dataset was built for academic evaluation in the published study. It is
-not a public benchmark and cannot be redistributed because it contains
-industrial inspection data and location-sensitive corridor information. Users
-who wish to reproduce or extend the pipeline should prepare their own UAV LiDAR
-OTL corridor point clouds with comparable tower-centered scenes, then adjust
-the preprocessing and extraction parameters according to point density, terrain
-condition, and tower type.
+```text
+data/
+  Line1/
+    Line1.txt
+  Line2/
+    Line2.txt
+  Line3/
+    Line3.txt
+  ...
+```
+
+Each scene file must be a plain space-separated TXT file without a header. The
+default loader expects at least four columns:
+
+```text
+x y z label
+```
+
+- `x`, `y`, and `z` are point coordinates in meters.
+- `label` is the binary ground-truth label, where `1` denotes tower points and
+  `0` denotes non-tower/background points.
+- The default configuration uses `label_column: 3`, meaning that the fourth
+  column is read as the label.
+- The default coordinate setting uses `integer_internal: true` and `scale: 10`,
+  which is suitable for 0.1 m quantized point coordinates.
+
+Example:
+
+```text
+431256.7 3120451.2 48.6 0
+431257.1 3120451.4 72.3 1
+431257.4 3120451.8 73.0 1
+```
+
+If your original point clouds are stored as LAS, LAZ, PLY, or another format,
+convert them to the TXT format above before running the scripts. For unlabeled
+inference-only use, the current loader still requires a fourth column, so add a
+placeholder label column and ignore the metric CSV files.
+
+After preparing the files, update `input_path` in `configs/default.yaml`, for
+example:
+
+```yaml
+input_path: data/Line1/Line1.txt
+```
+
+For batch ablation or sensitivity experiments, list all prepared scene files in
+the `input_paths` field of `configs/ablation.yaml` or
+`configs/sensitivity.yaml`.
+
+If you prefer another folder name such as `dataset/`, keep the same TXT file
+format and update all corresponding `input_path` or `input_paths` entries.
 
 ## Data Availability
 
