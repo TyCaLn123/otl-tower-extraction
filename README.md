@@ -60,8 +60,6 @@ x y z label
   `0` denotes non-tower/background points.
 - The default configuration uses `label_column: 3`, meaning that the fourth
   column is read as the label.
-- The default coordinate setting uses `integer_internal: true` and `scale: 10`,
-  which is suitable for 0.1 m quantized point coordinates.
 
 Example:
 
