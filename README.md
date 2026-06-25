@@ -30,6 +30,24 @@ This public release includes:
 - documentation for input data preparation and output interpretation;
 - scripts for evaluation and selected experiments.
 
+## Self-Built Dataset
+
+The experiments reported in the article were conducted on a self-built UAV
+LiDAR dataset for overhead transmission line tower extraction. The dataset was
+collected in cooperation with an industrial partner and covers multiple OTL
+inspection scenarios in China, including plain and mountainous areas. The point
+cloud scenes preserve realistic tower surroundings, where tower points are
+mixed with ground, vegetation, conductors, insulators, and other corridor
+objects.
+
+This dataset was built for academic evaluation in the published study. It is
+not a public benchmark and cannot be redistributed because it contains
+industrial inspection data and location-sensitive corridor information. Users
+who wish to reproduce or extend the pipeline should prepare their own UAV LiDAR
+OTL corridor point clouds with comparable tower-centered scenes, then adjust
+the preprocessing and extraction parameters according to point density, terrain
+condition, and tower type.
+
 ## Data Availability
 
 The original datasets used in this study were collected in collaboration with
